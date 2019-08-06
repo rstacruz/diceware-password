@@ -14,6 +14,12 @@ fn main() {
                 .short("s")
                 .long("no-spaces")
                 .help("Remove spaces"),
+        )
+        .arg(
+            Arg::with_name("newline")
+                .short("n")
+                .long("newline")
+                .help("Print ending newline"),
             // )
             // .arg(
             //     Arg::with_name("no-symbols")
@@ -37,5 +43,10 @@ fn main() {
     let gen = Generator::new().word_count(4);
 
     let gen = gen.spaces(!matches.is_present("no-spaces"));
-    print!("{}", gen.generate())
+
+    if matches.is_present("newline") {
+        println!("{}", gen.generate())
+    } else {
+        print!("{}", gen.generate())
+    };
 }
