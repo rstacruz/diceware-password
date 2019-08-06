@@ -15,7 +15,13 @@ pub struct Generator {
 }
 
 impl Generator {
-    /// Create a new Self
+    /// Create a new password generator
+    ///
+    /// ```
+    /// let gen = Generator::new();
+    /// gen.generate()
+    /// // => "correct horse battery staple"
+    /// ```
     pub fn new() -> Self {
         Self {
             rng: rand::thread_rng(),
@@ -35,16 +41,12 @@ impl Generator {
     }
 
     /// Generate a password
-    ///
-    /// ```
-    /// gen = Generator::new();
-    /// gen.generate()
-    /// // => "correct horse battery staple"
-    /// ```
     pub fn generate(&self) -> String {
         let count = self.word_count;
         let words = self.get_words(count);
-        if self.spaces {
+        let use_spaces = self.spaces;
+
+        if use_spaces {
             words.join(" ")
         } else {
             words.join("-")
