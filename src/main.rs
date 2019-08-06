@@ -6,22 +6,40 @@ use rand::Rng;
 use words::{WORDS, WORDS_SIZE};
 
 fn main() {
-    let rng = rand::thread_rng();
-    let words = get_words(rng);
-
-    println!("{} {} {} {}", words[0], words[1], words[2], words[3]);
+    let gen = Generator::new();
+    let passwd = gen.generate();
+    println!("{}", passwd);
 }
 
-fn get_words<'a>(rng: ThreadRng) -> Vec<&'a str> {
-    vec![
-        get_random_word(rng),
-        get_random_word(rng),
-        get_random_word(rng),
-        get_random_word(rng),
-    ]
+struct Generator {
+    rng: ThreadRng,
 }
 
-fn get_random_word<'a>(mut rng: ThreadRng) -> &'a str {
-    let n: usize = rng.gen_range(0, WORDS_SIZE);
-    &WORDS[n]
+impl Generator {
+    pub fn new() -> Generator {
+        Generator {
+            rng: rand::thread_rng(),
+        }
+    }
+
+    pub fn generate(&self) -> String {
+        let words = self.get_words();
+        let str = format!("{} {} {} {}", words[0], words[1], words[2], words[3]);
+        str
+    }
+
+    pub fn get_words<'a>(&self) -> Vec<&'a str> {
+        vec![
+            self.get_random_word(),
+            self.get_random_word(),
+            self.get_random_word(),
+            self.get_random_word(),
+        ]
+    }
+
+    pub fn get_random_word<'a>(&self) -> &'a str {
+        let mut rng = self.rng;
+        let n: usize = rng.gen_range(0, WORDS_SIZE);
+        &WORDS[n]
+    }
 }
