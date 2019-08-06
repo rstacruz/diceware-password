@@ -2,6 +2,8 @@ extern crate rand;
 use crate::words::{WORDS, WORDS_SIZE};
 use rand::prelude::ThreadRng;
 use rand::Rng;
+#[cfg(test)]
+mod tests;
 
 pub struct Generator {
     /// Random number generator
