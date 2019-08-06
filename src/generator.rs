@@ -15,21 +15,21 @@ pub struct Generator {
 }
 
 impl Generator {
-    /// Create a new Generator
-    pub fn new() -> Generator {
-        Generator {
+    /// Create a new Self
+    pub fn new() -> Self {
+        Self {
             rng: rand::thread_rng(),
             word_count: 4,
             spaces: true,
         }
     }
 
-    pub fn word_count(mut self, n: u64) -> Generator {
+    pub fn word_count(mut self, n: u64) -> Self {
         self.word_count = n;
         self
     }
 
-    pub fn spaces(mut self, value: bool) -> Generator {
+    pub fn spaces(mut self, value: bool) -> Self {
         self.spaces = value;
         self
     }
