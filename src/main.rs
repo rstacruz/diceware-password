@@ -37,6 +37,5 @@ fn main() {
     let gen = Generator::new().word_count(4);
 
     let gen = gen.spaces(!matches.is_present("no-spaces"));
-
-    println!("{}", gen.generate());
+    print!("{}", gen.generate())
 }
