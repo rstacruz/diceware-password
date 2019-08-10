@@ -44,6 +44,7 @@ impl Generator {
     pub fn generate(&self) -> String {
         let count = self.word_count;
         let words = self.get_words(count);
+        // let parts = self.add_junk(&words);
         let use_spaces = self.use_spaces;
 
         if use_spaces {
@@ -52,10 +53,13 @@ impl Generator {
             words.join("-")
         }
     }
+    // pub fn add_junk(&self, source: &Vec<String>) -> Vec<String> {
+    //     source
+    // }
 
     /// Returns `count` random words
-    pub fn get_words<'a>(&self, count: u64) -> Vec<&'a str> {
-        let mut words: Vec<&str> = vec![];
+    pub fn get_words(&self, count: u64) -> Vec<String> {
+        let mut words: Vec<String> = vec![];
         let mut index = 0;
 
         while index < count {
@@ -67,9 +71,9 @@ impl Generator {
     }
 
     /// Returns one random word
-    pub fn get_random_word<'a>(&self) -> &'a str {
+    pub fn get_random_word<'a>(&self) -> String {
         let mut rng = self.rng;
         let n: usize = rng.gen_range(0, WORDS_SIZE);
-        &WORDS[n]
+        String::from(WORDS[n])
     }
 }
