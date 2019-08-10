@@ -1,5 +1,6 @@
 extern crate rand;
 use crate::words::{WORDS, WORDS_SIZE};
+use crate::symbols::{SYMBOLS, SYMBOLS_SIZE};
 use rand::prelude::ThreadRng;
 use rand::Rng;
 #[cfg(test)]
@@ -69,7 +70,19 @@ impl Generator {
     }
 
     pub fn get_junk(&self) -> String {
-        String::from("$20")
+        let mut rng = self.rng;
+
+        match rng.gen_range(0, 3) {
+            0 => format!("{}{}", self.get_numbers(), self.get_symbols()),
+            1 => format!("{}{}{}", self.get_numbers(), self.get_symbols(), self.get_numbers()),
+            _ => format!("{}{}", self.get_symbols(), self.get_numbers())
+        }
+
+    }
+
+    pub fn get_symbols(&self) -> String {
+        let sym = self.get_random_symbol();
+        String::from(sym)
     }
 
     /// Returns `count` random words
@@ -86,9 +99,21 @@ impl Generator {
     }
 
     /// Returns one random word
-    pub fn get_random_word<'a>(&self) -> String {
+    pub fn get_numbers(&self) -> String {
+        let mut rng = self.rng;
+        rng.gen_range(1, 99).to_string()
+    }
+
+    pub fn get_random_word(&self) -> String {
         let mut rng = self.rng;
         let n: usize = rng.gen_range(0, WORDS_SIZE);
         String::from(WORDS[n])
+    }
+
+    /// Returns one random symbol
+    pub fn get_random_symbol(&self) -> String {
+        let mut rng = self.rng;
+        let n: usize = rng.gen_range(0, SYMBOLS_SIZE);
+        String::from(SYMBOLS[n])
     }
 }

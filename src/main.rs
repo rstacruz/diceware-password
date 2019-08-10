@@ -1,7 +1,9 @@
 extern crate clap;
 use clap::{App, Arg};
+
 mod generator;
 mod words;
+mod symbols;
 
 use generator::Generator;
 
