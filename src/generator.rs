@@ -32,14 +32,12 @@ impl Generator {
         }
     }
 
-    pub fn word_count(mut self, n: u64) -> Self {
-        self.word_count = n;
-        self
+    pub fn word_count(self, value: u64) -> Self {
+        Self { word_count: value, ..self }
     }
 
-    pub fn spaces(mut self, value: bool) -> Self {
-        self.spaces = value;
-        self
+    pub fn spaces(self, value: bool) -> Self {
+        Self { spaces: value, ..self }
     }
 
     /// Generate a password
