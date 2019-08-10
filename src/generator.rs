@@ -1,6 +1,6 @@
 extern crate rand;
-use crate::words::{WORDS, WORDS_SIZE};
 use crate::symbols::{SYMBOLS, SYMBOLS_SIZE};
+use crate::words::{WORDS, WORDS_SIZE};
 use rand::prelude::ThreadRng;
 use rand::Rng;
 #[cfg(test)]
@@ -61,23 +61,41 @@ impl Generator {
         }
     }
 
+    /// Adds "junk" into a vector of strings.
+    ///
+    /// ```
+    /// self.add_junk(["hello", "world"])
+    /// // => ["hello", "world", "20$"]
+    /// ```
     pub fn add_junk(&self, source: &[String]) -> Vec<String> {
         let mut result: Vec<String> = vec![];
+        let mut rng = self.rng;
         let junk = self.get_junk();
+
+        // Find the spot to place the junk in
+        let len = source.len();
+        let n = rng.gen_range(1, len + 1);
+
+        // Reconstruct result
+        result.extend_from_slice(&source[0..n]);
         result.push(junk);
-        result.extend_from_slice(source);
+        result.extend_from_slice(&source[n..]);
+
         result
     }
 
+    /// Gets "junk", or a string of random numbers and symbols
     pub fn get_junk(&self) -> String {
         let mut rng = self.rng;
 
-        match rng.gen_range(0, 3) {
-            0 => format!("{}{}", self.get_numbers(), self.get_symbols()),
-            1 => format!("{}{}{}", self.get_numbers(), self.get_symbols(), self.get_numbers()),
-            _ => format!("{}{}", self.get_symbols(), self.get_numbers())
-        }
+        let parts = match rng.gen_range(0, 4) {
+            0 => vec![self.get_numbers(), self.get_symbols()],
+            1 => vec![self.get_numbers(), self.get_symbols(), self.get_numbers()],
+            2 => vec![self.get_symbols(), self.get_numbers(), self.get_symbols()],
+            _ => vec![self.get_symbols(), self.get_numbers()],
+        };
 
+        parts.join("")
     }
 
     pub fn get_symbols(&self) -> String {

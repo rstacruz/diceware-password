@@ -13,3 +13,11 @@ fn it_can_set_things() {
     assert_eq!(gen.word_count, 8);
     assert_eq!(gen.use_spaces, false);
 }
+
+#[test]
+fn it_can_generate() {
+    for _x in 0..10 {
+        let gen = Generator::new().generate();
+        assert!(gen.len() > 0);
+    }
+}
