@@ -13,7 +13,7 @@ pub struct Generator {
     word_count: u64,
 
     /// If spaces are to be used
-    spaces: bool,
+    use_spaces: bool,
 }
 
 impl Generator {
@@ -28,7 +28,7 @@ impl Generator {
         Self {
             rng: rand::thread_rng(),
             word_count: 4,
-            spaces: true,
+            use_spaces: true,
         }
     }
 
@@ -36,15 +36,15 @@ impl Generator {
         Self { word_count: value, ..self }
     }
 
-    pub fn spaces(self, value: bool) -> Self {
-        Self { spaces: value, ..self }
+    pub fn use_spaces(self, value: bool) -> Self {
+        Self { use_spaces: value, ..self }
     }
 
     /// Generate a password
     pub fn generate(&self) -> String {
         let count = self.word_count;
         let words = self.get_words(count);
-        let use_spaces = self.spaces;
+        let use_spaces = self.use_spaces;
 
         if use_spaces {
             words.join(" ")

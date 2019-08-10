@@ -42,7 +42,7 @@ fn main() {
 
     let gen = Generator::new().word_count(4);
 
-    let gen = gen.spaces(!matches.is_present("no-spaces"));
+    let gen = gen.use_spaces(!matches.is_present("no-spaces"));
 
     if matches.is_present("newline") {
         println!("{}", gen.generate())
