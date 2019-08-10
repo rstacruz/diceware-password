@@ -33,29 +33,44 @@ impl Generator {
     }
 
     pub fn word_count(self, value: u64) -> Self {
-        Self { word_count: value, ..self }
+        Self {
+            word_count: value,
+            ..self
+        }
     }
 
     pub fn use_spaces(self, value: bool) -> Self {
-        Self { use_spaces: value, ..self }
+        Self {
+            use_spaces: value,
+            ..self
+        }
     }
 
     /// Generate a password
     pub fn generate(&self) -> String {
         let count = self.word_count;
         let words = self.get_words(count);
-        // let parts = self.add_junk(&words);
+        let parts = self.add_junk(&words);
         let use_spaces = self.use_spaces;
 
         if use_spaces {
-            words.join(" ")
+            parts.join(" ")
         } else {
-            words.join("-")
+            parts.join("-")
         }
     }
-    // pub fn add_junk(&self, source: &Vec<String>) -> Vec<String> {
-    //     source
-    // }
+
+    pub fn add_junk(&self, source: &[String]) -> Vec<String> {
+        let mut result: Vec<String> = vec![];
+        let junk = self.get_junk();
+        result.push(junk);
+        result.extend_from_slice(source);
+        result
+    }
+
+    pub fn get_junk(&self) -> String {
+        String::from("$20")
+    }
 
     /// Returns `count` random words
     pub fn get_words(&self, count: u64) -> Vec<String> {
