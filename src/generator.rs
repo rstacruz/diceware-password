@@ -93,10 +93,10 @@ impl Generator {
         let mut rng = self.rng;
 
         let parts = match rng.gen_range(0, 4) {
-            0 => vec![self.get_numbers(), self.get_symbols()],
-            1 => vec![self.get_numbers(), self.get_symbols(), self.get_numbers()],
-            2 => vec![self.get_symbols(), self.get_numbers(), self.get_symbols()],
-            _ => vec![self.get_symbols(), self.get_numbers()],
+            0 => vec![self.get_digits(), self.get_symbols()],
+            1 => vec![self.get_digits(), self.get_symbols(), self.get_digits()],
+            2 => vec![self.get_symbols(), self.get_digits(), self.get_symbols()],
+            _ => vec![self.get_symbols(), self.get_digits()],
         };
 
         parts.join("")
@@ -136,19 +136,35 @@ impl Generator {
         words
     }
 
-    /// Returns one random word
-    pub fn get_numbers(&self) -> String {
+    /// Returns one random number as a string.
+    ///
+    /// ```
+    /// self.get_digits()
+    /// // => "832"
+    /// ```
+    pub fn get_digits(&self) -> String {
         let mut rng = self.rng;
         rng.gen_range(1, 99).to_string()
     }
 
+    /// Returns one random word.
+    ///
+    /// ```
+    /// self.get_random_word()
+    /// // => "potato"
+    /// ```
     pub fn get_random_word(&self) -> String {
         let mut rng = self.rng;
         let n: usize = rng.gen_range(0, WORDS_SIZE);
         String::from(WORDS[n])
     }
 
-    /// Returns one random symbol
+    /// Returns one random symbol.
+    ///
+    /// ```
+    /// self.get_random_symbol()
+    /// // => "$"
+    /// ```
     pub fn get_random_symbol(&self) -> String {
         let mut rng = self.rng;
         let n: usize = rng.gen_range(0, SYMBOLS_SIZE);
