@@ -51,7 +51,7 @@ impl Generator {
     /// Generate a password
     pub fn generate(&self) -> String {
         let count = self.word_count;
-        let parts = self.get_words(count);
+        let parts = self.gen_words(count);
         let parts = self.capitalize_one_word(&parts);
         let parts = self.add_junk(&parts);
         let use_spaces = self.use_spaces;
@@ -66,46 +66,30 @@ impl Generator {
 
 /// These are internal delegate methods.
 impl Generator {
-    /// Adds "junk" into a vector of strings.
+    /// Returns `count` random words
     ///
     /// ```
-    /// self.add_junk(["hello", "world"])
-    /// // => ["hello", "world", "20$"]
+    /// gen_words()
+    /// // => ["hey", "yeah", "oh", "what"]
     /// ```
-    pub fn add_junk(&self, source: &[String]) -> Vec<String> {
-        let mut result: Vec<String> = vec![];
-        let mut rng = self.rng;
-        let junk = self.get_junk();
+    pub fn gen_words(&self, count: u64) -> Vec<String> {
+        let mut words: Vec<String> = vec![];
+        let mut index = 0;
 
-        // Find the spot to place the junk in
-        let len = source.len();
-        let n = rng.gen_range(1, len + 1);
+        while index < count {
+            words.push(self.gen_random_word());
+            index += 1;
+        }
 
-        // Reconstruct result
-        result.extend_from_slice(&source[0..n]);
-        result.push(junk);
-        result.extend_from_slice(&source[n..]);
-        result
+        words
     }
 
-    /// Gets "junk", or a string of random numbers and symbols
+    /// Capitalizes one word in a list of words
     /// ```
-    /// self.get_junk()
-    /// // => "20.1$"
+    /// let source = vec!["hello", "world"]
+    /// let result = capitalize_one_word(&source)
+    /// // => ["hello", "World"]
     /// ```
-    fn get_junk(&self) -> String {
-        let mut rng = self.rng;
-
-        let parts = match rng.gen_range(0, 4) {
-            0 => vec![self.get_digits(), self.get_symbols()],
-            1 => vec![self.get_digits(), self.get_symbols(), self.get_digits()],
-            2 => vec![self.get_symbols(), self.get_digits(), self.get_symbols()],
-            _ => vec![self.get_symbols(), self.get_digits()],
-        };
-
-        parts.join("")
-    }
-
     pub fn capitalize_one_word(&self, source: &[String]) -> Vec<String> {
         let mut rng = self.rng;
 
@@ -122,31 +106,65 @@ impl Generator {
         result
     }
 
-    pub fn get_symbols(&self) -> String {
-        let sym = self.get_random_symbol();
-        String::from(sym)
+    /// Adds "junk" into a vector of strings.
+    /// ```
+    /// self.add_junk(["hello", "world"])
+    /// // => ["hello", "world", "20$"]
+    /// ```
+    pub fn add_junk(&self, source: &[String]) -> Vec<String> {
+        let mut result: Vec<String> = vec![];
+        let mut rng = self.rng;
+        let junk = self.gen_junk();
+
+        // Find the spot to place the junk in
+        let len = source.len();
+        let n = rng.gen_range(1, len + 1);
+
+        // Reconstruct result
+        result.extend_from_slice(&source[0..n]);
+        result.push(junk);
+        result.extend_from_slice(&source[n..]);
+        result
     }
 
-    /// Returns `count` random words
-    pub fn get_words(&self, count: u64) -> Vec<String> {
-        let mut words: Vec<String> = vec![];
-        let mut index = 0;
+    /// Gets "junk", or a string of random numbers and symbols
+    /// ```
+    /// self.gen_junk()
+    /// // => "20.1$"
+    /// ```
+    fn gen_junk(&self) -> String {
+        let mut rng = self.rng;
 
-        while index < count {
-            words.push(self.get_random_word());
-            index += 1;
+        let parts = match rng.gen_range(0, 3) {
+            0 => vec![self.gen_digits(), self.gen_symbols()],
+            1 => vec![self.gen_digits(), self.gen_symbols(), self.gen_digits()],
+            _ => vec![self.gen_symbols(), self.gen_digits()],
+        };
+
+        parts.join("")
+    }
+
+    /// Returns some symbols
+    /// ```
+    /// self.gen_symbols()
+    /// // => "!$"
+    /// ```
+    pub fn gen_symbols(&self) -> String {
+        let mut rng = self.rng;
+
+        match rng.gen_range(0, 2) {
+            0 => format!("{}{}", self.gen_random_symbol(), self.gen_random_symbol()),
+            _ => self.gen_random_symbol(),
         }
-
-        words
     }
 
     /// Returns one random number as a string.
     ///
     /// ```
-    /// self.get_digits()
+    /// self.gen_digits()
     /// // => "832"
     /// ```
-    pub fn get_digits(&self) -> String {
+    pub fn gen_digits(&self) -> String {
         let mut rng = self.rng;
         rng.gen_range(1, 99).to_string()
     }
@@ -154,10 +172,10 @@ impl Generator {
     /// Returns one random word.
     ///
     /// ```
-    /// self.get_random_word()
+    /// self.gen_random_word()
     /// // => "potato"
     /// ```
-    pub fn get_random_word(&self) -> String {
+    pub fn gen_random_word(&self) -> String {
         let mut rng = self.rng;
         let n: usize = rng.gen_range(0, WORDS_SIZE);
         String::from(WORDS[n])
@@ -166,10 +184,10 @@ impl Generator {
     /// Returns one random symbol.
     ///
     /// ```
-    /// self.get_random_symbol()
+    /// self.gen_random_symbol()
     /// // => "$"
     /// ```
-    pub fn get_random_symbol(&self) -> String {
+    pub fn gen_random_symbol(&self) -> String {
         let mut rng = self.rng;
         let n: usize = rng.gen_range(0, SYMBOLS_SIZE);
         String::from(SYMBOLS[n])
