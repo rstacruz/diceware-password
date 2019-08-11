@@ -17,6 +17,7 @@ pub struct Generator {
     use_spaces: bool,
 }
 
+/// Methods used for public consumption.
 impl Generator {
     /// Create a new password generator
     ///
@@ -61,7 +62,10 @@ impl Generator {
             parts.join("-")
         }
     }
+}
 
+/// These are internal delegate methods.
+impl Generator {
     /// Adds "junk" into a vector of strings.
     ///
     /// ```
@@ -89,7 +93,7 @@ impl Generator {
     /// self.get_junk()
     /// // => "20.1$"
     /// ```
-    pub fn get_junk(&self) -> String {
+    fn get_junk(&self) -> String {
         let mut rng = self.rng;
 
         let parts = match rng.gen_range(0, 4) {

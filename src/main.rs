@@ -1,3 +1,24 @@
+//! Utilities for generating random passwords
+//!
+//! We generate random passwords with this.
+//!
+//! ```
+//! let password = Generator::new().generate();
+//! println!("{}", password)
+//! // => "correct horse Battery staple $20"
+//! ```
+//!
+//! You can pass some options:
+//!
+//! ```
+//! let password = Generator::new()
+//!   .use_spaces(false)
+//!   .word_count(3)
+//!   .generate();
+//! println!("{}", password)
+//! // => "Correct-horse-staple-$20"
+//! ```
+
 extern crate clap;
 use clap::{App, Arg};
 
@@ -5,8 +26,9 @@ mod generator;
 mod symbols;
 mod words;
 
-use generator::Generator;
+pub use generator::Generator;
 
+/// The CLI runner
 fn main() {
     let app = App::new("Passgen")
         .about("Generates passwords")
