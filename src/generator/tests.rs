@@ -30,3 +30,13 @@ fn it_can_generate_passwords() {
         assert!(has_numbers.is_match(&result));
     }
 }
+
+#[test]
+// Use `cargo test[ify] -- --nocapture` to show these
+fn it_print_generated_passwords() {
+    println!("Examples:");
+    for _x in 0..8 {
+        let result = Generator::new().generate();
+        println!("    {}", result);
+    }
+}

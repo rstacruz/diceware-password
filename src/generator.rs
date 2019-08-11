@@ -50,8 +50,9 @@ impl Generator {
     /// Generate a password
     pub fn generate(&self) -> String {
         let count = self.word_count;
-        let words = self.get_words(count);
-        let parts = self.add_junk(&words);
+        let parts = self.get_words(count);
+        let parts = self.capitalize_one_word(&parts);
+        let parts = self.add_junk(&parts);
         let use_spaces = self.use_spaces;
 
         if use_spaces {
@@ -80,11 +81,14 @@ impl Generator {
         result.extend_from_slice(&source[0..n]);
         result.push(junk);
         result.extend_from_slice(&source[n..]);
-
         result
     }
 
     /// Gets "junk", or a string of random numbers and symbols
+    /// ```
+    /// self.get_junk()
+    /// // => "20.1$"
+    /// ```
     pub fn get_junk(&self) -> String {
         let mut rng = self.rng;
 
@@ -96,6 +100,22 @@ impl Generator {
         };
 
         parts.join("")
+    }
+
+    pub fn capitalize_one_word(&self, source: &[String]) -> Vec<String> {
+        let mut rng = self.rng;
+
+        // Find the spot to place the junk in
+        let len = source.len();
+        let n = rng.gen_range(0, len);
+
+        let mut result: Vec<String> = vec![];
+
+        // Reconstruct result
+        result.extend_from_slice(&source[0..n]);
+        result.push(capitalize_word(&source[n]));
+        result.extend_from_slice(&source[(n + 1)..]);
+        result
     }
 
     pub fn get_symbols(&self) -> String {
@@ -134,4 +154,11 @@ impl Generator {
         let n: usize = rng.gen_range(0, SYMBOLS_SIZE);
         String::from(SYMBOLS[n])
     }
+}
+
+pub fn capitalize_word(source: &str) -> String {
+    let first = &source[0..1];
+    let letter = first.to_ascii_uppercase();
+    let rest = &source[1..];
+    format!("{}{}", letter, rest)
 }
