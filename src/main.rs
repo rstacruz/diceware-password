@@ -22,6 +22,9 @@
 extern crate clap;
 use clap::{App, Arg};
 
+extern crate clipboard;
+use clipboard::{ClipboardProvider, ClipboardContext};
+
 mod generator;
 mod symbols;
 mod words;
@@ -44,6 +47,12 @@ fn main() {
                 .short("n")
                 .long("newline")
                 .help("Print ending newline"),
+        )
+        .arg(
+            Arg::with_name("clipboard")
+                .short("c")
+                .long("clipboard")
+                .help("Copy to clipboard"),
             // )
             // .arg(
             //     Arg::with_name("no-symbols")
@@ -67,10 +76,15 @@ fn main() {
     let gen = Generator::new().word_count(4);
 
     let gen = gen.use_spaces(!matches.is_present("no-spaces"));
+    let passwd = gen.generate();
 
     if matches.is_present("newline") {
-        println!("{}", gen.generate())
+        println!("{}", passwd)
+    } else if matches.is_present("clipboard") {
+        let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
+        ctx.set_contents(passwd.to_owned()).unwrap();
+        eprintln!("Copied to clipboard.");
     } else {
-        print!("{}", gen.generate())
+        print!("{}", passwd)
     };
 }
