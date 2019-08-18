@@ -20,15 +20,15 @@
 //! ```
 
 extern crate clap;
-use clap::{App, Arg};
 
+mod clipboard;
 mod generator;
 mod symbols;
 mod words;
-mod clipboard;
 
-pub use generator::Generator;
 use crate::clipboard::copy_to_clipboard;
+use clap::{App, Arg};
+pub use generator::Generator;
 
 /// The CLI runner
 fn main() {
