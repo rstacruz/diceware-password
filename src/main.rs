@@ -22,14 +22,13 @@
 extern crate clap;
 use clap::{App, Arg};
 
-extern crate clipboard;
-use clipboard::{ClipboardProvider, ClipboardContext};
-
 mod generator;
 mod symbols;
 mod words;
+mod clipboard;
 
 pub use generator::Generator;
+use crate::clipboard::copy_to_clipboard;
 
 /// The CLI runner
 fn main() {
@@ -81,8 +80,7 @@ fn main() {
     if matches.is_present("newline") {
         println!("{}", passwd)
     } else if matches.is_present("clipboard") {
-        let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
-        ctx.set_contents(passwd.to_owned()).unwrap();
+        copy_to_clipboard(&passwd);
         eprintln!("Copied to clipboard.");
     } else {
         print!("{}", passwd)
